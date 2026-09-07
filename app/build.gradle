@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'jacoco'          // code coverage - useful for CI/CD reporting
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // --- Dependency management demo ---
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'com.google.guava:guava:33.2.1-jre'
+}
+
+application {
+    mainClass = 'com.devops.app.App'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    finalizedBy jacocoTestReport   // generate coverage report after tests run
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+// Custom task: useful in a CI/CD pipeline as a single "quality gate" step
+tasks.register('buildPipeline') {
+    group = 'ci-cd'
+    description = 'Runs clean, test, and build together - simulates a CI pipeline stage.'
+    dependsOn 'clean', 'build'
+    tasks.findByName('build').mustRunAfter 'clean'
+}

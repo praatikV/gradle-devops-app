@@ -1,0 +1,8 @@
+// Root build file. Subproject-specific configuration lives in app/build.gradle.
+// Kept here to demonstrate multi-module Gradle project structure.
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
