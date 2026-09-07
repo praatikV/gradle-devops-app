@@ -1,0 +1,2 @@
+rootProject.name = 'gradle-devops-app'
+include 'app'
